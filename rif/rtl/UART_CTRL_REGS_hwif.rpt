@@ -1,0 +1,11 @@
+hwif_in.UART_RDR.RD.next[7:0]
+hwif_in.UART_CFG.TX_START.hwclr
+hwif_in.UART_CFG.RD_RECIEVED.hwset
+hwif_in.UART_CFG.TX_COMPLETE.hwset
+hwif_out.UART_CPB.CPB.value[31:0]
+hwif_out.UART_STP.STP.value[1:0]
+hwif_out.UART_RDR.RD.value[7:0]
+hwif_out.UART_TDR.TD.value[7:0]
+hwif_out.UART_CFG.TX_START.value
+hwif_out.UART_CFG.RD_RECIEVED.value
+hwif_out.UART_CFG.TX_COMPLETE.value

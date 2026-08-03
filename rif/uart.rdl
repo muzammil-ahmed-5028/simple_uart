@@ -1,0 +1,113 @@
+addrmap UART_CTRL_REGS {
+
+    default regwidth    = 32;
+    default accesswidth = 32;
+    
+    reg {
+        name = "UART Clock Per Bit Register";
+        desc = "Register Used to set baud rate for the UART Module
+               Sets How many clock pulses will be sampled for each bit";
+
+        field {
+            name = "Clock Per Bit Field";
+            desc = "UART Baud Rate set using the formula of <system_clock_freq>/CPB";
+
+
+            sw = rw; // Software to set this field. 
+            hw = r;  // Hardware should never modify it, Hardware behavior will depend on value set inp this register
+        
+        } CPB[31:0] = 1'b1;
+
+    } UART_CPB @ 0x00;
+
+    reg {
+        name = "UART Stop Bit Register";
+        desc = "Used to Control how long the UART Stop Bit is asserted";
+            
+        field {
+            name = "Stop Bit Field";
+            desc = "Controls how long to configure UART Stop rate
+                2'b00: 1   bit period
+                2'b01: 1.5 bit period
+                2'b1X: 2   bit period";
+
+            sw = rw; // Software to set this field. 
+            hw = r;  // Hardware should never modify it, Hardware behavior will depend on value set in this register
+        
+        } STP[1:0] = 0;
+
+    } UART_STP @ 0x04;
+
+    
+    reg {
+        name = "UART Read Data Register";
+        desc = "Contains 1 byte of Data read into by the UART Reciever";
+            
+        field {
+            name = "RD Field";
+            desc = "1 byte of data Read from UART reciever, Rest Bits not used
+                   Upon completion of data being recieved UART_CFG[1] = 1";
+
+
+            sw = r;   // Software to read this field for operation. Should never have need to modify this register 
+            hw = rw;  // UART Reciever will write to this field
+        
+        } RD[7:0] = 0;
+
+    } UART_RDR @ 0x08;
+
+    
+    reg {
+        name = "UART Transmit Data Register";
+        desc = "Contains 1 byte of Data To be Transmitted via the UART Transmitter";
+            
+        field {
+            name = "TD Field";
+            desc = "1 byte of data to be transmitted from UART Transmitter, Rest Bits not used
+                   Upon completion of data being recieved UART_CFG[2] = 1";
+
+
+            sw = rw;   // Software to write data in this register to transmit over UART
+            hw = r;    // UART Transmitter Should only read this. Should never have any need to write to this field
+        
+        } TD[7:0] = 0;
+
+    } UART_TDR @ 0x0C;
+
+    reg {
+        name = "UART Configuration Register";
+        desc = "UART Transciever Control Interface. Provides Transmission start bit, and completion flags";
+            
+        field {
+            name = "Tranmit Start Field";
+            desc = "Software asserts 1 on this field to begin transmission. Hardware deasserts to 0 upon completion of transfer";
+
+            sw = rw;   // Software to Write to this field to begin operation
+            hw = r;    // Hardware should be able read if necessary
+            hwclr;
+
+        } TX_START[0:0] = 0;
+
+        field {
+            name = "Data Recieved Field";
+            desc = "UART Reciever asserts 1 on this field the moment data is done being recieved";
+
+            sw = rw;   // Software should read this field to know when to read UART_RDR. It should be reset by SW at end of Transmission
+            hw = r;   // Hardware should be able to set and clear this fieldx  
+            hwset;
+            precedence = hw;
+        } RD_RECIEVED[1:1] = 0;
+
+        field {
+            name = "Tranmission Complete Field";
+            desc = "UART Transciever asserts 1 on this field the moment data is done being transmitted";
+
+            sw = rw;    // Software should read this field to know if transmission is complete. It should be reset by SW at end of Transmission
+            hw = r;    // Hardware should be able to set this field signalling end of tranmission  
+            hwset;
+            precedence = hw;
+        } TX_COMPLETE[2:2] = 0;
+
+    } UART_CFG @ 0x10;
+
+};
