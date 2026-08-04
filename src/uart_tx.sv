@@ -140,7 +140,7 @@ module uart_tx (
     end
     
     // -------------------------------------------------------------------------- //
-    // Combination part of UART State Machine. Explanations follow from above.    //
+    // Combinational part of UART State Machine. Explanations follow from above.    //
     // -------------------------------------------------------------------------- //
     
     always_comb begin
