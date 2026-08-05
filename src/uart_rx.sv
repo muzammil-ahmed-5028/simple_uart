@@ -1,14 +1,14 @@
 module uart_rx (
-    input logic clk,
-    input logic arst_n,
+    input logic         clk,
+    input logic         arst_n,
 
-    input logic cpb_i,
-    input logic stp_i,
-    input logic rx_i,
+    input logic         cpb_i,
+    input logic         stp_i,
+    input logic         rx_i,
 
-    output logic rx_data_o,
-    output logic rx_done_o,
-    output logic rx_busy_o
+    output logic [7:0]  rx_data_o,
+    output logic        rx_done_o,
+    output logic        rx_busy_o
 );
 
 typedef enum {
@@ -55,7 +55,24 @@ assign falling_edge = rx_sync_d && (!rx_sync);
 
 always_ff@(posedge clk or negedge arst_n) begin
     if (!arst_n) begin
-        
+        rx_done_o       <= '0;
+        rx_busy_o       <= '0;
+        rx_data_o       <= '0;
+        rx_bit_idx      <= '0;
+        baud_counter    <= '0;
+    end
+    else begin
+        case (rx_state)
+            IDLE        : rx_state <= (falling_edge) ? CHECK_START : IDLE;
+            CHECK_START : begin
+                if(baud_counter == ((casted_cpb >> 1)-1)) begin
+                    rx_state = (!rx_sync) ? RECIEVE_DATA : IDLE
+                    baud_counter <= '0;
+                end
+                else baud_counter++;
+            end
+            
+        endcase
     end
 end
 
