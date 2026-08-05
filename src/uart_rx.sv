@@ -25,6 +25,7 @@ logic           rx_sync;
 logic           rx_sync_d;
 logic           falling_edge;
 logic           rx_bit_idx;
+logic   [7:0]   rx_shift;
 logic   [32:0]  casted_cpb;
 logic   [32:0]  stop_cycles;
 
@@ -60,18 +61,45 @@ always_ff@(posedge clk or negedge arst_n) begin
         rx_data_o       <= '0;
         rx_bit_idx      <= '0;
         baud_counter    <= '0;
+        rx_shift        <= '0;
     end
     else begin
         case (rx_state)
             IDLE        : rx_state <= (falling_edge) ? CHECK_START : IDLE;
             CHECK_START : begin
                 if(baud_counter == ((casted_cpb >> 1)-1)) begin
-                    rx_state = (!rx_sync) ? RECIEVE_DATA : IDLE
-                    baud_counter <= '0;
+                    rx_state        <= (!rx_sync) ? RECIEVE_DATA : IDLE
+                    baud_counter    <= '0;
+                    rx_busy_o       <= '1;
                 end
                 else baud_counter++;
             end
-            
+            RECIEVE_DATA: begin
+                rx_busy_o   <= '1;
+                if (baud_counter == (casted_cpb -1)) begin
+                    rx_bit_idx  <= (rx_bit_idx == 3'b111) ? '0          : rx_bit_idx + 1;
+                    rx_state    <= (rx_bit_idx == 3'b111) ? CHECK_STOP  : RECIEVE_DATA;
+                    rx_shift[rx_bit_idx] <= rx_sync;
+                end
+                else baud_counter++
+            end
+            CHECK_STOP: begin
+                rx_busy_o <= '1;
+                if (baud_counter == (casted_cpb -1)) begin
+                    if(rx_sync == 1'b1) begin
+                        rx_data_o <= rx_shift;
+                        rx_state <= DONE;
+                    end 
+                    else rx_state <= IDLE;
+                end
+                else baud_counter++;
+            end
+
+            DONE: begin
+                rx_state <= IDLE;
+                rx_busy_o <= '0;
+                rx_done_o <= '0;
+            end
         endcase
     end
 end
