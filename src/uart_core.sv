@@ -20,23 +20,63 @@ import UART_CTRL_REGS_pkg::UART_CTRL_REGS__out_t;
     output logic [31:0] s_apb_prdata,
     output logic s_apb_pslverr,
 
-    // Hardware interface not added as pinouts it is  currently not needed
-    // Hardware interface used internally in UART
+    output logic        irq_rx_o,
+    output logic        irq_tx_o,
 );
 
+logic [7:0]             rx_data;
+logic                   rx_done;
+logic                   rx_busy;
+
+logic                   tx_done;
+logic                   tx_busy;
+
+UART_CTRL_REGS__in_t    hwif_in;
+UART_CTRL_REGS__out_t   hwif_out;
+
+assign hwif_in.UART_RDR.RDR.next            = rx_data;
+assign hwif_in.UART_RDR.RDR.we              = rx_done;
+assign hwif_in.UART_CFG.RD_RECIEVED.hwset   = rx_done;
+
+assign hwif_in.UART_CFG.TX_START.hwclr      = tx_done;
+assign hwif_in.UART_CFG.TX_COMPLETE.hwset   = tx_done;
+
 UART_CTRL_REGS (
-    .clk(clk),
-    .rst(arst_n),
-    .s_apb_psel(),
-    .s_apb_penable(),
-    .s_apb_pwrite(),
-    .s_apb_paddr(),
-    .s_apb_pwdata(),
-    .s_apb_pready(),
-    .s_apb_prdata(),
-    .s_apb_pslverr(),
-    .hwif_in(),
-    .hwif_out()
+    .clk            (clk),
+    .rst            (arst_n),
+    .s_apb_psel     (s_apb_psel),
+    .s_apb_penable  (s_apb_penable),
+    .s_apb_pwrite   (s_apb_pwrite),
+    .s_apb_paddr    (s_apb_paddr),
+    .s_apb_pwdata   (s_apb_pwdata),
+    .s_apb_pready   (s_apb_pready),
+    .s_apb_prdata   (s_apb_prdata),
+    .s_apb_pslverr  (s_apb_pslverr),
+    .hwif_in        (hwif_in),
+    .hwif_out       (hwif_out)
+);
+
+uart_rx rx (
+    .clk             (clk),
+    .arst_n          (arst_n),
+    .cpb_i           (hwif_out.UART_CPB.CPB.value),
+    .stp_i           (hwif_out.UART_STP.STP.value),
+    .rx_i            (rx_i),
+    .rx_data_o       (rx_data),
+    .rx_done_o       (rx_done),
+    .rx_busy_o       (rx_busy)
+);
+
+uart_tx tx (
+    .clk            (clk),
+    .arst_n         (arst_n),
+    .tx_start_i     (hwif_out.UART_CFG.TX_START.value),
+    .tx_data_i      (hwif_out.UART_TDR.TDR.value),
+    .cpb_i          (hwif_out.UART_CPB.CPB.value),
+    .stp_i          (hwif_out.UART_STP.STP.value),
+    .tx_o           (tx_o),
+    .tx_busy_o      (tx_busy),
+    .tx_done_o      (tx_busy)
 );
 
 
