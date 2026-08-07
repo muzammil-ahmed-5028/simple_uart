@@ -41,9 +41,9 @@ assign hwif_in.UART_CFG.RD_RECIEVED.hwset   = rx_done;
 assign hwif_in.UART_CFG.TX_START.hwclr      = tx_done;
 assign hwif_in.UART_CFG.TX_COMPLETE.hwset   = tx_done;
 
-UART_CTRL_REGS (
+UART_CTRL_REGS uart_rif (
     .clk            (clk),
-    .rst            (arst_n),
+    .rst            (!arst_n),
     .s_apb_psel     (s_apb_psel),
     .s_apb_penable  (s_apb_penable),
     .s_apb_pwrite   (s_apb_pwrite),
@@ -76,9 +76,11 @@ uart_tx tx (
     .stp_i          (hwif_out.UART_STP.STP.value),
     .tx_o           (tx_o),
     .tx_busy_o      (tx_busy),
-    .tx_done_o      (tx_busy)
+    .tx_done_o      (tx_done)
 );
 
+assign irq_rx_o = hwif_out.UART_CFG.RD_RECIEVED.value;
+assign irq_tx_o = hwif_out.UART_CFG.TX_COMPLETE.value;
 
 
 endmodule
