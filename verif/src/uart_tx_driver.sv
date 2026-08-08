@@ -1,10 +1,26 @@
-class uart_tx_driver extends uart_base_driver#(uart_seq_item);
+class uart_tx_driver extends uvm_driverr#(uart_seq_item);
     `uvm_component_utils(uart_tx_driver)
+    
+    virtual uart_if vif;
+    uart_cfg cfg;
 
     function new(string name="uart_tx_driver",uvm_component parent);
-        super.new(name,parent)
+        super.new(name,parent);
     endfunction
+    
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        
+        if (vif == null) begin
+            `uvm_fatal("NO_UART_IF","UART Vif not passed from agent to driver")
+        end
+        
+        if (cfg == null) begin
+            `uvm_fatal("NO_UART_CFG","No uart_cfg object is passed to the driver.")
+        end
 
+    endfunction
+    
     virtual task run_phase(uvm_phase phase);
         uart_seq_item   req;
         realtime        bit_period;
@@ -19,13 +35,13 @@ class uart_tx_driver extends uart_base_driver#(uart_seq_item);
             
             seq_item_port.get_next_item(req);
             
-            get_drv_config(
+            cfg.get_drv_config(
                 bit_period,
                 stop_period,
                 data_packet_length        
             );
 
-            calculate_parity(
+            cfg.calculate_parity(
                 req.data,
                 data_packet_length,
                 parity_bit,

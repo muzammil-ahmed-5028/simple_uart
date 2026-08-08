@@ -1,12 +1,27 @@
-class uart_rx_driver extends uart_base_driver#(uart_seq_item);
-    `uvm_component_utils(uart_rx_driver)
+class uart_rx_monitor extends uvm_monitor;
+    `uvm_component_utils(uart_rx_monitor)
 
-    function new(string name="uart_rx_driver",uvm_component parent);
-        super.new(name,parent)
+    virtual uart_if vif;
+    uart_cfg cfg;
+
+    function new(string name="uart_rx_monitor",uvm_component parent);
+        super.new(name,parent);
+    endfunction
+    
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        
+        if (vif == null) begin
+            `uvm_fatal("NO_UART_IF","UART Vif not passed from agent to Monitor")
+        end
+        
+        if (cfg == null) begin
+            `uvm_fatal("NO_UART_CFG_OBJECT","No uart_cfg object is passed to the Monitor")
+        end
+
     endfunction
 
     virtual task run_phase(uvm_phase phase);
-        uart_seq_item   req;
         realtime        bit_period;
         realtime        stop_period;
         int             data_packet_length;
@@ -15,8 +30,6 @@ class uart_rx_driver extends uart_base_driver#(uart_seq_item);
 
         forever begin
 
-            vif.tx_o <= 1'b1;
-            
             get_drv_config(
                 bit_period,
                 stop_period,
