@@ -1,5 +1,6 @@
 class uart_agent extends uvm_agent;
-
+    `uvm_component_utils(uart_agent)
+    
     uart_tx_driver  drv;
     uart_sequencer  seqr;
     uart_rx_monitor mon;
@@ -27,7 +28,7 @@ class uart_agent extends uvm_agent;
         end
 
         drv     = uart_tx_driver::type_id::create("drv",this);
-        seqr    = uart_sequencer_driver::type_id::create("seqr",this);
+        seqr    = uart_sequencer::type_id::create("seqr",this);
         mon     = uart_rx_monitor::type_id::create("mon", this);
 
         drv.cfg = cfg;
@@ -43,5 +44,5 @@ class uart_agent extends uvm_agent;
         drv.seq_item_port.connect(seqr.seq_item_export);
     endfunction 
 
-    
+
 endclass
