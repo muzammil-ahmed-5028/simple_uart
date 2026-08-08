@@ -2,7 +2,6 @@ interface uart_if;
     
     logic rx_i;
     logic tx_o;
-    logic rst_n;
 
 endinterface
 

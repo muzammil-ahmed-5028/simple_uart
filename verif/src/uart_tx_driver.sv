@@ -12,7 +12,7 @@ class uart_tx_driver extends uvm_driverr#(uart_seq_item);
         super.build_phase(phase);
         
         if (vif == null) begin
-            `uvm_fatal("NO_UART_IF","UART Vif not passed from agent to driver")
+            `uvm_fatal("NO_UART_VIF","UART Vif not passed from agent to driver")
         end
         
         if (cfg == null) begin
@@ -25,7 +25,6 @@ class uart_tx_driver extends uvm_driverr#(uart_seq_item);
         uart_seq_item   req;
         realtime        bit_period;
         realtime        stop_period;
-        int             data_packet_length;
         bit             has_parity;
         bit             parity_bit;
 
@@ -38,22 +37,17 @@ class uart_tx_driver extends uvm_driverr#(uart_seq_item);
             cfg.get_drv_config(
                 bit_period,
                 stop_period,
-                data_packet_length        
+                has_parity
             );
 
-            cfg.calculate_parity(
-                req.data,
-                data_packet_length,
-                parity_bit,
-                has_parity
-            )
+            parity_bit = cfg.calculate_parity(req.data)
 
             // 1. Assert Start
             vif.tx_o <= 1'b0;
             #(bit_period);
 
             // 2. Transmit Data
-            for (int i=0; i< data_packet_length; i++) begin
+            for (int i=0; i< cfg.data_packet_length; i++) begin
                 vif.tx_o <= req.data[i];
                 #(bit_period);
             end
