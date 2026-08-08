@@ -20,11 +20,11 @@ package uart_verif_pkg;
     } uart_stop_length_e;
 
     `include "uart_seq_item.sv"
-    `include "uart_base_driver.sv"
+    `include "uart_rx_item.sv"
+    `include "uart_sequencer.sv"
+    `include "uart_cfg.sv"
     `include "uart_tx_driver.sv"
-    `include "uart_rx_driver.sv"
-    
-    `include "uart_tx_monitor.sv"
     `include "uart_rx_monitor.sv"
-
+    `include "uart_agent.sv"
+    
 endpackage

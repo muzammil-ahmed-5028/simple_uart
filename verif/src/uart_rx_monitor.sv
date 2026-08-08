@@ -12,7 +12,7 @@ class uart_rx_monitor extends uvm_monitor;
     
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        
+
         if (vif == null) begin
             `uvm_fatal("NO_UART_VIF","UART Vif not passed from agent to Monitor")
         end
@@ -21,6 +21,8 @@ class uart_rx_monitor extends uvm_monitor;
             `uvm_fatal("NO_UART_CFG_OBJECT","No uart_cfg object is passed to the Monitor")
         end
 
+        rx_observed_port = new("rx_observed_port",this);
+        
     endfunction
 
     virtual task run_phase(uvm_phase phase);
