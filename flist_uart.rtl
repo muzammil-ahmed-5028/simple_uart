@@ -1,0 +1,6 @@
+rif/rtl/UART_CTRL_REGS_pkg.sv
+rif/rtl/UART_CTRL_REGS.sv
+src/sync.sv
+src/uart_rx.sv
+src/uart_tx.sv
+src/uart_core.sv

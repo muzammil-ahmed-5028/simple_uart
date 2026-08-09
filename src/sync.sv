@@ -7,7 +7,7 @@ module sync(
 
 logic sync_stage;
 
-always_ff @(posedge clk or negedge arst_n) begin
+always_ff @(posedge dst_clk or negedge arst_n) begin
     if(!arst_n) begin
         dst_data        <= '0;
         sync_stage      <= '0;

@@ -116,7 +116,7 @@ module uart_tx (
                     if(baud_counter == (cpb_i - 1)) begin
                         tx_state        <= (tx_bit_idx == 3'b111) ? STOP : DATA;
                         tx_bit_idx      <= (tx_bit_idx == 3'b111) ? '0   : tx_bit_idx + 1;
-                        baud_counter    <= '0
+                        baud_counter    <= '0;
                     end
                     else baud_counter++;
                 end
@@ -133,7 +133,7 @@ module uart_tx (
                 
                 WAIT_FOR_CLEAR: tx_state <= (!tx_start_i) ? IDLE : WAIT_FOR_CLEAR;
 
-                default: tx_state <= IDLE
+                default: tx_state <= IDLE;
             
             endcase
         end
@@ -178,7 +178,6 @@ module uart_tx (
                 tx_busy_o   <= '0;
                 tx_done_o   <= '1;
             end
-            default: 
         endcase
     end
 

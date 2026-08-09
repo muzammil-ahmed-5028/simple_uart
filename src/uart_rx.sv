@@ -27,7 +27,7 @@ logic           rx_bit_idx;
 logic   [7:0]   rx_shift;
 logic   [32:0]  casted_cpb;
 logic   [32:0]  stop_cycles;
-
+logic   [32:0]  baud_counter;
 assign casted_cpb = {1'b0,cpb_i};
 
 sync uart_rx_sync(
@@ -58,7 +58,7 @@ always_ff@(posedge clk or negedge arst_n) begin
             IDLE        : rx_state <= (falling_edge) ? CHECK_START : IDLE;
             CHECK_START : begin
                 if(baud_counter == ((casted_cpb >> 1)-1)) begin
-                    rx_state        <= (!rx_sync) ? RECIEVE_DATA : IDLE
+                    rx_state        <= (!rx_sync) ? RECIEVE_DATA : IDLE;
                     baud_counter    <= '0;
                     rx_busy_o       <= '1;
                 end
@@ -71,7 +71,7 @@ always_ff@(posedge clk or negedge arst_n) begin
                     rx_state    <= (rx_bit_idx == 3'b111) ? CHECK_STOP  : RECIEVE_DATA;
                     rx_shift[rx_bit_idx] <= rx_sync;
                 end
-                else baud_counter++
+                else baud_counter++;
             end
             CHECK_STOP: begin
                 rx_busy_o <= '1;

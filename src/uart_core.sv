@@ -7,7 +7,7 @@ import UART_CTRL_REGS_pkg::UART_CTRL_REGS__out_t;
     input logic arst_n,
     
     // UART Top Interface
-    input logic rx_i
+    input logic rx_i,
     output logic tx_o,
 
     // UART RIF Interface
@@ -21,7 +21,7 @@ import UART_CTRL_REGS_pkg::UART_CTRL_REGS__out_t;
     output logic s_apb_pslverr,
 
     output logic        irq_rx_o,
-    output logic        irq_tx_o,
+    output logic        irq_tx_o
 );
 
 logic [7:0]             rx_data;
@@ -34,8 +34,7 @@ logic                   tx_busy;
 UART_CTRL_REGS__in_t    hwif_in;
 UART_CTRL_REGS__out_t   hwif_out;
 
-assign hwif_in.UART_RDR.RDR.next            = rx_data;
-assign hwif_in.UART_RDR.RDR.we              = rx_done;
+assign hwif_in.UART_RDR.RD.next            = rx_data;
 assign hwif_in.UART_CFG.RD_RECIEVED.hwset   = rx_done;
 
 assign hwif_in.UART_CFG.TX_START.hwclr      = tx_done;
@@ -60,7 +59,6 @@ uart_rx rx (
     .clk             (clk),
     .arst_n          (arst_n),
     .cpb_i           (hwif_out.UART_CPB.CPB.value),
-    .stp_i           (hwif_out.UART_STP.STP.value),
     .rx_i            (rx_i),
     .rx_data_o       (rx_data),
     .rx_done_o       (rx_done),
@@ -71,7 +69,7 @@ uart_tx tx (
     .clk            (clk),
     .arst_n         (arst_n),
     .tx_start_i     (hwif_out.UART_CFG.TX_START.value),
-    .tx_data_i      (hwif_out.UART_TDR.TDR.value),
+    .tx_data_i      (hwif_out.UART_TDR.TD.value),
     .cpb_i          (hwif_out.UART_CPB.CPB.value),
     .stp_i          (hwif_out.UART_STP.STP.value),
     .tx_o           (tx_o),
