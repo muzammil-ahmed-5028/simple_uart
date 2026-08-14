@@ -1,7 +1,10 @@
 class uart_rx_item extends uvm_sequence_item;
     
-    `uvm_object_utils(uart_frame_item)
-
+    `uvm_object_utils(uart_rx_item)
+    function new(string name="uart_rx_item");
+        super.new(name);
+    endfunction
+    
     logic [8:0]    rdata;
     logic          parity_bit;
     logic          stop_bit;

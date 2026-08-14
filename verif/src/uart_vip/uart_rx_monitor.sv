@@ -91,7 +91,7 @@ class uart_rx_monitor extends uvm_monitor;
 
                 if (has_parity) begin
                     
-                    expected_parity_bit = cfg.calculate_parity(rdata);
+                    cfg.calculate_parity(rx_item.rdata,expected_parity_bit);
                     
                     rx_item.parity_bit = vif.rx_i;
                     
@@ -100,7 +100,7 @@ class uart_rx_monitor extends uvm_monitor;
                     //-------------------------------------------//
 
                     if (expected_parity_bit != rx_item.parity_bit) begin
-                       `uvm_error("UART_MON",$sformatf("Parity Error: Data recieved = %0b: Expected Parity = %0b: Recieved Parity = %0b",rdata, expected_parity_bit, rx_item.parity_bit)) 
+                       `uvm_error("UART_MON",$sformatf("Parity Error: Data recieved = %0b: Expected Parity = %0b: Recieved Parity = %0b",rx_item.rdata, expected_parity_bit, rx_item.parity_bit)) 
                         rx_item.has_parity_error = 1'b1;
                     end
                     else rx_item.has_parity_error = 1'b0;

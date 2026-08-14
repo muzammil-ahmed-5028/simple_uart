@@ -1,4 +1,4 @@
-class uart_tx_driver extends uvm_driverr#(uart_seq_item);
+class uart_tx_driver extends uvm_driver#(uart_seq_item);
     `uvm_component_utils(uart_tx_driver)
     
     virtual uart_if vif;
@@ -34,13 +34,13 @@ class uart_tx_driver extends uvm_driverr#(uart_seq_item);
             
             seq_item_port.get_next_item(req);
             
-            cfg.get_drv_config(
+            cfg.get_config(
                 bit_period,
                 stop_period,
                 has_parity
             );
 
-            parity_bit = cfg.calculate_parity(req.data)
+            cfg.calculate_parity(req.data,parity_bit);
 
             // 1. Assert Start
             vif.tx_o <= 1'b0;
@@ -54,12 +54,12 @@ class uart_tx_driver extends uvm_driverr#(uart_seq_item);
 
             // 3. Send Parity if needed
             if (has_parity) begin
-                vif.tx_o <= (inject_parity_error) ? ~parity_bit : parity_bit;                 
+                vif.tx_o <= (req.inject_parity_error) ? ~parity_bit : parity_bit;                 
                 #(bit_period);
             end
 
             // 4. Send Stop bits 
-            vif.tx_o <= inject_framing_error ? 1'b0: 1'b1; 
+            vif.tx_o <= req.inject_framing_error ? 1'b0: 1'b1; 
             #(stop_period);
 
             seq_item_port.item_done();
