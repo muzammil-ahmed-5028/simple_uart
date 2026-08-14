@@ -1,0 +1,3 @@
+[submodule "sub/apb3"]
+	path = sub/apb3
+	url = https://github.com/muzammil-ahmed-5028/APB3-UVM-VIP
