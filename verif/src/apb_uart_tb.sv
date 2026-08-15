@@ -48,10 +48,15 @@ module apb_uart_tb;
     initial begin
         assert_reset();
     end
+    
+    initial begin
+        $dumpfile("apb_uart_tb.fst");
+        $dumpvars(0,apb_uart_tb);    
+    end
 
     initial begin
-        uvm_config_db#(virtual apb_intf#(32,32))::set(null,"uvm_test_top.env.apb_agent","vif",apb_if);
-        uvm_config_db#(virtual uart_if)::set(null,"uvm_test_top.env.uart_agent","vif",uart_if);
+        uvm_config_db#(virtual apb_intf#(32,32))::set(null,"uvm_test_top.env.apb_agent","apb_intf",apb_if);
+        uvm_config_db#(virtual uart_if)::set(null,"uvm_test_top.env.uart_agent_inst","uart_vif",uart_if);
         run_test();    
     end
 

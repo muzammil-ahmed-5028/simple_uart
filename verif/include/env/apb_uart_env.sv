@@ -11,9 +11,9 @@ class apb_uart_env extends uvm_env;
 
     virtual function void build_phase(uvm_phase phase);
         super.build_phase(phase);
-        uart_cfg_inst   = uart_cfg::type_id::create("UART_CFG",this);
-        uart_agent_inst = uart_agent::type_id::create("UART_AGENT",this);
-        apb_agent       = apb_master_agent #(32,32)::type_id::create("APB_AGENT",this);
+        uart_cfg_inst   = uart_cfg::type_id::create("uart_cfg_inst",this);
+        uart_agent_inst = uart_agent::type_id::create("uart_agent_inst",this);
+        apb_agent       = apb_master_agent #(32,32)::type_id::create("apb_agent",this);
 
         uart_cfg_inst.parity = PARITY_NONE;
         uart_cfg_inst.stop_length = STOP_PERIOD_1X;
