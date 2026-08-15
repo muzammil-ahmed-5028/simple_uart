@@ -3,5 +3,9 @@
 // path/to/uvm/src/uvm_pkg.sv
 
 -f flist_uart.rtl
++incdir+sub/apb3/include
++incdir+verif/include
 sub/apb3/src/apb_vip_pkg.sv
-verif/src/uart_vip/uart_vip_pkg.sv
+verif/src/uart_vip_pkg.sv
+verif/src/apb_uart_test_pkg.sv
+verif/src/apb_uart_tb.sv

@@ -1,9 +1,11 @@
 module apb_uart_tb;
+    import uvm_pkg::*;
+    import apb_uart_test_pkg::*;
 
     bit clk = 1'b1;
     bit arst_n;
 
-    apb_intf apb_if ();
+    apb_intf #(32,32) apb_if ();
     uart_if uart_if ();
 
     assign apb_if.PCLK      = clk;
@@ -13,16 +15,18 @@ module apb_uart_tb;
         // Start simulation with reset deasserted
         arst_n <= 1'b1;
         #(50 * 1ns);
+    
         // assert Reset
         arst_n <= 1'b0;
         #(50 * 1ns);
+    
         // Deassert Reset
         arst_n <= 1'b1;
     endtask
 
-    forever begin
-        #(5 * 1ns) clk = ~clk;        
-    end
+    
+    always #(5 * 1ns) clk = ~clk;        
+    
 
     uart_core dut( 
         .clk            (clk),
@@ -37,12 +41,18 @@ module apb_uart_tb;
         .s_apb_pready   (apb_if.PREADY),
         .s_apb_prdata   (apb_if.PRDATA),
         .s_apb_pslverr  (apb_if.PSLVERR),
-        .irq_rx_o,
-        .irq_tx_o   
+        .irq_rx_o(),
+        .irq_tx_o()   
     );
 
     initial begin
         assert_reset();
+    end
+
+    initial begin
+        uvm_config_db#(virtual apb_intf#(32,32))::set(null,"uvm_test_top.env.apb_agent","vif",apb_if);
+        uvm_config_db#(virtual uart_if)::set(null,"uvm_test_top.env.uart_agent","vif",uart_if);
+        run_test();    
     end
 
 endmodule

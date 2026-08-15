@@ -5,11 +5,12 @@ class apb_uart_rif_smoke_test extends apb_uart_base_test;
         super.new(name,parent);
     endfunction
 
-    virtual task run_phase(uvm_component phase);
+    virtual task run_phase(uvm_phase phase);
+        apb_write_read_sequence seq;
+        
         phase.raise_objection(this);
         
-        apb_write_read_sequence seq;
-        seq = apb_uart_rif_smoke_test::type_id::create("seq");
+        seq = apb_write_read_sequence::type_id::create("seq");
         seq.start(env.apb_agent.seqr);
         
         phase.drop_objection(this);

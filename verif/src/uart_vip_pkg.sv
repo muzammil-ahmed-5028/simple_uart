@@ -5,7 +5,7 @@ interface uart_if;
 
 endinterface
 
-package uart_verif_pkg;
+package uart_vip_pkg;
     import uvm_pkg::*;
     `include "uvm_macros.svh"
     
@@ -21,12 +21,12 @@ package uart_verif_pkg;
         STOP_PERIOD_2X
     } uart_stop_length_e;
 
-    `include "uart_seq_item.sv"
-    `include "uart_rx_item.sv"
-    `include "uart_sequencer.sv"
-    `include "uart_cfg.sv"
-    `include "uart_tx_driver.sv"
-    `include "uart_rx_monitor.sv"
-    `include "uart_agent.sv"
+    `include "uart_agent/uart_seq_item.sv"
+    `include "uart_agent/uart_rx_item.sv"
+    `include "uart_agent/uart_sequencer.sv"
+    `include "uart_agent/uart_cfg.sv"
+    `include "uart_agent/uart_tx_driver.sv"
+    `include "uart_agent/uart_rx_monitor.sv"
+    `include "uart_agent/uart_agent.sv"
     
 endpackage
