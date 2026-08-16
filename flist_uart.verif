@@ -6,6 +6,7 @@
 +incdir+sub/apb3/include
 +incdir+verif/include
 sub/apb3/src/apb_vip_pkg.sv
+rif/uvm/UART_CTRL_REGS_uvm.sv
 verif/src/uart_vip_pkg.sv
 verif/src/apb_uart_test_pkg.sv
 verif/src/apb_uart_tb.sv

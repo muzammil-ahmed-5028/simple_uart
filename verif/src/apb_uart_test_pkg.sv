@@ -2,6 +2,7 @@ package apb_uart_test_pkg;
     
     import uart_vip_pkg::*;
     import apb_vip_pkg::*;
+    import UART_CTRL_REGS_uvm::*;
     import uvm_pkg::*;
     
     `include "uvm_macros.svh"
@@ -10,4 +11,5 @@ package apb_uart_test_pkg;
     `include "tests/apb_uart_rif_smoke_test.sv"
     `include "tests/apb_uart_tx_smoke_test.sv"
     `include "tests/apb_uart_rx_smoke_test.sv"
+    `include "tests/apb_uart_tx_ral_test.sv"
 endpackage

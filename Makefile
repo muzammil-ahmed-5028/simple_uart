@@ -35,6 +35,22 @@ VERILATOR_FLAGS += \
 	+define+UVM_NO_DPI \
 	"$(UVM_HOME)/uvm_pkg.sv" \
 	-o $(SIM)
+.PHONY: rif
+
+rdl_rtl:
+	rm -rf rif/rtl/* && \
+	../.venv/bin/peakrdl regblock rif/uart.rdl \
+	--top UART_CTRL_REGS \
+	--cpuif apb3-flat	\
+	-o rif/rtl
+
+rdl_ral: 
+	rm -rf rif/uvm/*	&& \
+	../.venv/bin/peakrdl uvm rif/uart.rdl \
+	--top UART_CTRL_REGS \
+	-o rif/uvm/UART_CTRL_REGS_uvm.sv 
+
+rdl: rdl_rtl rdl_ral
 
 slang_rtl:
 	slang -f flist_uart.rtl

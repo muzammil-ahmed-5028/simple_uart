@@ -6,7 +6,6 @@ class apb_uart_rx_smoke_test extends apb_uart_base_test;
     endfunction
 
     virtual task run_phase(uvm_phase phase);
-        uvm_event           tx_done;
         apb_custom_sequence cpb_set_seq;
         apb_custom_sequence stp_set_seq;
         apb_custom_sequence tdr_set_seq;
@@ -14,7 +13,6 @@ class apb_uart_rx_smoke_test extends apb_uart_base_test;
         
         uart_tx_custom_sequence tx_seq;
 
-        tx_done = uvm_event_pool::get_global("TX_DONE");
         phase.raise_objection(this);
         
         // Setting CPB

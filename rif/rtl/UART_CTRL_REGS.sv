@@ -211,7 +211,7 @@ module UART_CTRL_REGS (
     end
     always_ff @(posedge clk) begin
         if(rst) begin
-            field_storage.UART_CPB.CPB.value <= 32'h0;
+            field_storage.UART_CPB.CPB.value <= 32'h1;
         end else begin
             if(field_combo.UART_CPB.CPB.load_next) begin
                 field_storage.UART_CPB.CPB.value <= field_combo.UART_CPB.CPB.next;

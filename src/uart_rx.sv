@@ -92,7 +92,7 @@ always_ff@(posedge clk or negedge arst_n) begin
             DONE: begin
                 rx_state <= IDLE;
                 rx_busy_o <= '0;
-                rx_done_o <= '0;
+                rx_done_o <= '1;
             end
         endcase
     end

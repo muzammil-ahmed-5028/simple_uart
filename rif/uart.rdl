@@ -1,5 +1,6 @@
 addrmap UART_CTRL_REGS {
 
+    littleendian        = true;
     default regwidth    = 32;
     default accesswidth = 32;
     
