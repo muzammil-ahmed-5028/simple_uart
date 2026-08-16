@@ -9,4 +9,5 @@ package apb_uart_test_pkg;
     `include "tests/apb_uart_base_test.sv"
     `include "tests/apb_uart_rif_smoke_test.sv"
     `include "tests/apb_uart_tx_smoke_test.sv"
+    `include "tests/apb_uart_rx_smoke_test.sv"
 endpackage

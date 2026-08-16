@@ -25,6 +25,20 @@ class uart_rx_monitor extends uvm_monitor;
         
     endfunction
 
+    virtual function void  print_rx_item(uart_rx_item txn);
+        `uvm_info("UART_MON",
+        $sformatf("Uart RX Item recieved: \n rdata = %0d \n parity_bit = %0d \n stop_bit = %0d \n has_parity = %0d \n has_parity_error = %0d \n has_framing_error = %0d \n has_start_error = %0d \n", 
+        txn.rdata,
+        txn.parity_bit,
+        txn.stop_bit,
+        txn.has_parity,
+        txn.has_parity_error,
+        txn.has_framing_error,
+        txn.has_start_error),
+        UVM_LOW)
+    endfunction
+    
+
     virtual task run_phase(uvm_phase phase);
         
         uart_rx_item    rx_item;
@@ -122,6 +136,7 @@ class uart_rx_monitor extends uvm_monitor;
                 else rx_item.has_framing_error = 1'b0;
                 
             end
+            print_rx_item(rx_item);
             rx_observed_port.write(rx_item);
         end
     endtask

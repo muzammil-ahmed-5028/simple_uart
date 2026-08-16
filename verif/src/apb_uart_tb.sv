@@ -5,6 +5,12 @@ module apb_uart_tb;
     bit clk = 1'b1;
     bit arst_n;
 
+    bit irq_rx_o;
+    bit irq_tx_o;
+    
+    uvm_event tx_done;
+    uvm_event rx_done;
+    
     apb_intf #(32,32) apb_if ();
     uart_if uart_if ();
 
@@ -48,8 +54,8 @@ module apb_uart_tb;
         .s_apb_pready   (apb_if.PREADY),
         .s_apb_prdata   (apb_if.PRDATA),
         .s_apb_pslverr  (apb_if.PSLVERR),
-        .irq_rx_o(),
-        .irq_tx_o()   
+        .irq_rx_o(irq_rx_o),
+        .irq_tx_o(irq_tx_o)   
     );
 
     initial begin
@@ -63,8 +69,26 @@ module apb_uart_tb;
     end
 
     initial begin
+        forever begin
+            @(posedge irq_rx_o)
+            rx_done.trigger();
+        end
+    end
+
+    initial begin
+        forever begin
+            @(posedge irq_tx_o)
+            tx_done.trigger();
+        end
+    end
+    
+    initial begin
         uvm_config_db#(virtual apb_intf#(32,32))::set(null,"uvm_test_top.env.apb_agent","apb_intf",apb_if);
         uvm_config_db#(virtual uart_if)::set(null,"uvm_test_top.env.uart_agent_inst","uart_vif",uart_if);
+        
+        tx_done = uvm_event_pool::get_global("TX_DONE");
+        rx_done = uvm_event_pool::get_global("RX_DONE");
+
         run_test();    
     end
 
