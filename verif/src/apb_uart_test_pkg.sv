@@ -8,5 +8,5 @@ package apb_uart_test_pkg;
     `include "env/apb_uart_env.sv"
     `include "tests/apb_uart_base_test.sv"
     `include "tests/apb_uart_rif_smoke_test.sv"
-    
+    `include "tests/apb_uart_tx_smoke_test.sv"
 endpackage

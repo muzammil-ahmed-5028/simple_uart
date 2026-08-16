@@ -28,5 +28,6 @@ package uart_vip_pkg;
     `include "uart_agent/uart_tx_driver.sv"
     `include "uart_agent/uart_rx_monitor.sv"
     `include "uart_agent/uart_agent.sv"
+    `include "env/sequences/uart_tx_custom_seq.sv"
     
 endpackage

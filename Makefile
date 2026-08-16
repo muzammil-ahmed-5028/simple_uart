@@ -11,7 +11,7 @@ UVM_HOME ?= /home/muzzy_ubuntu/tools/uvm/1800.2-2017-1.0/src
 SIM_FLAGS = 
 
 DUMP?=0
-ifeq ($DUMP,1)
+ifeq ($(DUMP),1)
     VERILATOR_FLAGS += --trace-fst
 endif
 
