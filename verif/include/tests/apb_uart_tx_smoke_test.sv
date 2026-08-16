@@ -37,13 +37,13 @@ class apb_uart_tx_smoke_test extends apb_uart_base_test;
         tx_seq.inject_parity_error  = 1'b0;
         tx_seq.start(env.uart_agent_inst.seqr);
 
-        phase.drop_objection(this);
-
         rdr_read_seq = apb_custom_sequence::type_id::create("rdr_read_seq");
         rdr_read_seq.addr = 32'h8;
         rdr_read_seq.direction = 1'b0;
         rdr_read_seq.response_required = 1'b1;
         rdr_read_seq.start(env.apb_agent.seqr);
+
+        phase.drop_objection(this);
 
     endtask
     

@@ -24,15 +24,22 @@ module apb_uart_tb;
         arst_n <= 1'b1;
     endtask
 
-    
-    always #(5 * 1ns) clk = ~clk;        
+    task start_clock();
+        fork
+            forever begin
+            
+                #(5 * 1ns) clk = ~clk;
+            end
+        join_none
+    endtask
+
     
 
     uart_core dut( 
         .clk            (clk),
         .arst_n         (arst_n),
-        .rx_i           (uart_if.rx_i),
-        .tx_o           (uart_if.tx_o),
+        .rx_i           (uart_if.tx_o),
+        .tx_o           (uart_if.rx_i),
         .s_apb_psel     (apb_if.PSEL),
         .s_apb_penable  (apb_if.PENABLE),
         .s_apb_pwrite   (apb_if.PWRITE),
@@ -47,6 +54,7 @@ module apb_uart_tb;
 
     initial begin
         assert_reset();
+        start_clock();
     end
     
     initial begin

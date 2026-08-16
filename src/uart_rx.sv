@@ -2,7 +2,7 @@ module uart_rx (
     input logic         clk,
     input logic         arst_n,
 
-    input logic         cpb_i,
+    input logic  [31:0] cpb_i,
     input logic         rx_i,
 
     output logic [7:0]  rx_data_o,
@@ -23,7 +23,7 @@ rx_state_t      rx_state;
 logic           rx_sync;
 logic           rx_sync_d;
 logic           falling_edge;
-logic           rx_bit_idx;
+logic   [2:0]   rx_bit_idx;
 logic   [7:0]   rx_shift;
 logic   [32:0]  casted_cpb;
 logic   [32:0]  stop_cycles;
@@ -55,7 +55,10 @@ always_ff@(posedge clk or negedge arst_n) begin
     end
     else begin
         case (rx_state)
-            IDLE        : rx_state <= (falling_edge) ? CHECK_START : IDLE;
+            IDLE        : begin
+                rx_state <= (falling_edge) ? CHECK_START : IDLE;
+                baud_counter <= '0;
+            end
             CHECK_START : begin
                 if(baud_counter == ((casted_cpb >> 1)-1)) begin
                     rx_state        <= (!rx_sync) ? RECIEVE_DATA : IDLE;
@@ -70,6 +73,7 @@ always_ff@(posedge clk or negedge arst_n) begin
                     rx_bit_idx  <= (rx_bit_idx == 3'b111) ? '0          : rx_bit_idx + 1;
                     rx_state    <= (rx_bit_idx == 3'b111) ? CHECK_STOP  : RECIEVE_DATA;
                     rx_shift[rx_bit_idx] <= rx_sync;
+                    baud_counter <= '0;
                 end
                 else baud_counter++;
             end

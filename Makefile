@@ -8,7 +8,8 @@ export LINK	  	 := clang++
 # /home/muzzy_ubuntu/tools/uvm/1800.2-2017-1.0/src
 UVM_HOME ?= /home/muzzy_ubuntu/tools/uvm/1800.2-2017-1.0/src
 
-SIM_FLAGS = 
+UVM_TESTNAME = apb_uart_rif_smoke_test
+SIM_FLAGS += +UVM_TESTNAME=$(UVM_TESTNAME) 
 
 DUMP?=0
 ifeq ($(DUMP),1)
@@ -50,7 +51,7 @@ build:
 	$(VERILATOR) $(VERILATOR_FLAGS) -f flist_uart.verif
 
 run:
-	./obj_dir/$(SIM) +UVM_TESTNAME=apb_uart_rif_smoke_test $(SIM_FLAGS)
+	./obj_dir/$(SIM) $(SIM_FLAGS)
 
 clean:
 	rm -rf obj_dir logs *.vcd *.fst *.log
