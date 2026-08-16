@@ -92,6 +92,7 @@ module uart_tx (
         if (!arst_n) begin
             baud_counter    <= '0;
             tx_state        <= IDLE;
+            tx_bit_idx      <= '0;
         end
         else begin
             
@@ -109,7 +110,7 @@ module uart_tx (
                         tx_state        <= DATA;
                         baud_counter    <= '0;
                     end
-                    else baud_counter++;
+                    else baud_counter <=  baud_counter + 1'b1;
                 end
 
                 DATA: begin
@@ -118,7 +119,7 @@ module uart_tx (
                         tx_bit_idx      <= (tx_bit_idx == 3'b111) ? '0   : tx_bit_idx + 1;
                         baud_counter    <= '0;
                     end
-                    else baud_counter++;
+                    else baud_counter <=  baud_counter + 1'b1;
                 end
 
                 STOP: begin
@@ -126,7 +127,7 @@ module uart_tx (
                         baud_counter    <= '0;
                         tx_state        <= DONE;
                     end
-                    else baud_counter++;
+                    else baud_counter <=  baud_counter + 1'b1;
                 end
 
                 DONE: tx_state <= WAIT_FOR_CLEAR;

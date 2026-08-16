@@ -65,7 +65,7 @@ always_ff@(posedge clk or negedge arst_n) begin
                     baud_counter    <= '0;
                     rx_busy_o       <= '1;
                 end
-                else baud_counter++;
+                else baud_counter <=  baud_counter + 1'b1;
             end
             RECIEVE_DATA: begin
                 rx_busy_o   <= '1;
@@ -75,7 +75,7 @@ always_ff@(posedge clk or negedge arst_n) begin
                     rx_shift[rx_bit_idx] <= rx_sync;
                     baud_counter <= '0;
                 end
-                else baud_counter++;
+                else baud_counter <=  baud_counter + 1'b1;
             end
             CHECK_STOP: begin
                 rx_busy_o <= '1;
@@ -86,7 +86,7 @@ always_ff@(posedge clk or negedge arst_n) begin
                     end 
                     else rx_state <= IDLE;
                 end
-                else baud_counter++;
+                else baud_counter <=  baud_counter + 1'b1;
             end
 
             DONE: begin
